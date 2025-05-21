@@ -9,6 +9,7 @@ class Player:
         self.study_at_home_town_bonus = False
         self.exhausted = False
         self.game_over = False
+        self.extra_curriculum_group = 0
 
     def change_hp(self, points):
         self.health_points += points
@@ -59,13 +60,11 @@ class Questions:
             print(self.text_right_answer)
             player.change_int(10)
             player.change_soc(5)
-            achievement.right_answer_count += 1
         else:
             print(self.text_wrong_answer)
             print("Правильный ответ:", self.right_answer)
             player.change_int(5)
             player.change_soc(-5)
-            achievement.wrong_answer_count += 1
 
 
 question_1 = Questions(
@@ -240,7 +239,9 @@ fencing_wrong_answ_result = [
 
 fencing = ExtraCurriculum("клуб фехтовальщиков", fencing_text, fencing_right_answer, fencing_wrong_answers, fencing_right_answ_result, fencing_wrong_answ_result)
 theatre = ExtraCurriculum("клуб фехтовальщиков", fencing_text, fencing_right_answer, fencing_wrong_answers, fencing_right_answ_result, fencing_wrong_answ_result)
-linguictics = ExtraCurriculum("клуб фехтовальщиков", fencing_text, fencing_right_answer, fencing_wrong_answers, fencing_right_answ_result, fencing_wrong_answ_result)
+linguistics = ExtraCurriculum("клуб фехтовальщиков", fencing_text, fencing_right_answer, fencing_wrong_answers, fencing_right_answ_result, fencing_wrong_answ_result)
+
+
 # ===== функции =====
 
 def introduction():
@@ -256,17 +257,17 @@ def introduction():
         player.change_soc(10)
     d = int(input("В какой внеучебный клуб вы хотите записаться? Клуб фехтовальщиков / театральный клуб / лингвокружок (1, 2, 3  )"))
     if d == 1:
-        extra_curriculum_group = fencing
+        player.extra_curriculum_group = fencing
     elif d == 2:
-        extra_curriculum_group = theatre
+        player.extra_curriculum_group = theatre
     else:
-        extra_curriculum_group = linguistics
+        player.extra_curriculum_group = linguistics
     print(f"""Благодарим за ответ! (Статистика:
     Здоровье: {player.health_points}
     Интеллект: {player.intellect_points}
     Социальные навыки: {player.social_points})""")
     # print(player.study_at_home_town_bonus, player.intellect_bonus, player.social_skill_bonus)
-    return extra_curriculum_group
+    return player
 
 def morning():
     if player.study_at_home_town_bonus:
@@ -297,11 +298,19 @@ def lesson():
         if i == day:
             el.trigger()
     print("Вы набрались опыта и стали чуть умнее. Продолжайте усердно учиться, и экзамен покажется лёгким.")
-    print("Занятия подошли к концу")
+    print(f"Занятия подошли к концу.")
 
 
-def extra_curriculum(ec_group = extra_curriculum_group, day):
-    ec_group.action(day)
+def extra_curriculum():
+    if player.extra_curriculum_group == fencing:
+        print(f"Пора бежать в {fencing.name}.")
+        fencing.action(day)
+    elif player.extra_curriculum_group == theatre:
+        print(f"Пора бежать в {theatre.name}.")
+        theatre.action(day)
+    else:
+        print(f"Пора бежать в {linguistics.name}.")
+        linguistics.action(day)
 
 
 def evening():
@@ -338,8 +347,6 @@ def ill_lecturer():
         print("Решено сходить на лекцию другой группы. Внезапно, вы получили удовольствие от роли вольнослушателя и с пользой провели время. Полученные знания обязательно однажды пригодятся вам (но это не точно)")
         player.change_hp(-5)
         player.change_int(10)
-        achievement.attend_extra_lesson = True
-        achievement.check_gameplay_achievements()
     else:
         truant()
 
@@ -363,8 +370,6 @@ def truant():
     print("Вы решили оставить занятия")
     player.change_soc(5)
     player.change_int(-10)
-    achievement.truant_count += 1
-    achievement.check_gameplay_achievements()
 
 def sport():
     print("Пришло напоминание о том, что нужно посещать занятия по физре. Сегодня как раз отличный день для этого. Только тогда придется пропустить внеучебку.")
@@ -373,8 +378,6 @@ def sport():
         print("Нестрашно пропустить внеучебку один раз. Зачет все равно придется получать рано или поздно")
         player.change_hp(10)
         player.change_soc(-5)
-        achievement.sport_lesson_count += 1
-        achievement.check_gameplay_achievements()
     else:
         print("Вы решили. что физру можно закрыть позже, а сегодня можно пропустить занятие")
         player.change_hp(-5)
@@ -389,7 +392,6 @@ def volunteering():
         player.change_hp(-10)
         player.change_soc(15)
         volunteer_day.accepted = True
-        achievement.check_gameplay_achievements()
 
 # ========== код экзамена  ==========
 def exam():
@@ -454,8 +456,8 @@ for day in range(1, 7+1):
     print(f"День {day}-й.")
     for el in random_event_list:
         el.day_check(day)
-        if el.check:
-            print(f"Сегодня должно произойти {el.name}")
+        # if el.check:
+        #     print(f"Сегодня должно произойти {el.name}")
     morning()
     if transport_event.check:
         bus_or_car_event()
@@ -474,13 +476,10 @@ for day in range(1, 7+1):
         if sport_lesson.check:
             sport()
         else:
-            extra_curriculum(day)
+            extra_curriculum()
         evening()
     for el in random_event_list:
         el.check = False
 # ===== активация достижений =====
-
-achievement.answer_achievement()
-achievement.attend_lessons()
 
 exam()
