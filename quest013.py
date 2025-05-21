@@ -1,6 +1,6 @@
 import random
 import sys
-
+# ===== классы объектов =====
 class Player:
     def __init__(self):
         self.health_points = 70
@@ -43,69 +43,6 @@ class Player:
         sys.exit()
 
 player = Player()
-
-class Achievements:
-    def __init__(self):
-        self.lesson_count = 0
-        self.extra_curriculum_count = 0
-        self.right_answer_count = 0
-        self.wrong_answer_count = 0
-
-        self.no_wrong_answers = False
-        self.no_right_answers = False
-        self.all_right_answers = False
-        self.all_wrong_answers = False
-        self.been_at_all_lessons = False
-        self.max_truant = False
-        self.attend_extra_lesson = False
-
-        self.sport_lesson_count = 0
-        self.truant_count = 0
-
-        self.sport_enthusiast = False
-        self.social_butterfly = False
-        self.scholar = False
-        self.health_lover = False
-        self.volunteer_vanguard = False
-
-    def answer_achievement(self):
-        if self.right_answer_count == 5:
-            self.all_right_answers = True
-            print("Получено достижение: вы ответили верно на все возможные вопросы")
-        if self.wrong_answer_count == 5:
-            self.all_wrong_answers = True
-            print("Получено достижение: вы ответили неправильно на все возможные вопросы")
-
-    def attend_lessons(self):
-        if (self.right_answer_count + self.wrong_answer_count == 5
-                and self.attend_extra_lesson):
-            self.been_at_all_lessons = True
-            print("Получено достижение - ударник: вы побывали на каждой паре (даже на чужих)")
-        if (self.right_answer_count + self.wrong_answer_count == 3
-                and not self.attend_extra_lesson):
-            self.max_truant = True
-            print("Получено достижение - прогульщик: вы пропускали пары каждый раз, когда была возможность")
-
-    def check_gameplay_achievements(self):
-        if self.sport_lesson_count >= 2 and not self.sport_enthusiast:
-            self.sport_enthusiast = True
-            print("Получено достижение - фанат фитнеса: здоровое тело - здоровый ум... или как там?")
-
-        if player.social_points >= 80 and not self.social_butterfly:
-            self.social_butterfly = True
-            print("Получено достижение - душа компании: связи помогут вам, когда ничто другое не поможет")
-
-        if player.intellect_points >= 120 and not self.scholar:
-            self.scholar = True
-            print("Получено достижение - академический гений: вы полагаетесь на свою приверженность науке")
-
-        if volunteer_day.accepted and not self.volunteer_vanguard:
-            self.volunteer_vanguard = True
-            print("Получено достижение - образцовый волонтёр: вас ценят за ваше неравнодушие.")
-
-
-achievement = Achievements()
-
 
 class Questions:
     def __init__(self, question_text, right_answer, text_right_answer, text_wrong_answer, day):
@@ -203,7 +140,6 @@ question_7 = Questions(
 
 question_list = [question_1, question_2, question_3, question_4, question_5, question_6, question_7]
 
-
 class RandomEvents:
     def __init__(self, name):
         self.name = name
@@ -231,6 +167,7 @@ for i, event in enumerate(random_event_list):
     event.day = x[i]
     print(event.day)
 
+# ===== функции =====
 
 def introduction():
     print("Поздравляем! Вы поступили в наш университет. В целях сбора статистики ответьте на три вопроса:")
@@ -374,7 +311,7 @@ def volunteering():
         volunteer_day.accepted = True
         achievement.check_gameplay_achievements()
 
-# ========== экзамен  ==========
+# ========== код экзамена  ==========
 def exam():
     print("Учебная неделя закончилась. За ней прошла и вторая, и третья... Настало время проверить ваши знания. Время сдавать экзамен")
 
@@ -461,6 +398,7 @@ for day in range(1, 7+1):
         evening()
     for el in random_event_list:
         el.check = False
+# ===== активация достижений =====
 
 achievement.answer_achievement()
 achievement.attend_lessons()
